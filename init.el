@@ -43,7 +43,10 @@
 ;;        Go Guru (golang 代码导航工具)的使用 https://www.jainshu.com/p/994e85e21135
 
 
-
+;; ** Delve debugger
+;; https://github.com/benma/go-dlv.el
+(autoload 'dlv "go-dlv"
+  "Run dlv on program FILE in buffer ‘*gud-FILE*’." t)
 
 
 
