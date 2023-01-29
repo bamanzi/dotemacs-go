@@ -49,4 +49,39 @@
   "Run dlv on program FILE in buffer ‘*gud-FILE*’." t)
 
 
+;; ** eglot (lightweight LSP server)
+;; NOTE: `go install golang.org/x/tools/gopls@latest` required
+;; https://github.com/joaotavora/eglot
+;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+
+;; *** project
+(eval-after-load "project"
+  `(progn
+     (defun project-find-go-module (dir)
+       (when-let ((root (locate-dominating-file dir "go.mod")))
+         (cons 'go-module root)))
+
+     (cl-defmethod project-root ((project (head go-module)))
+       (cdr project))
+
+     (add-hook 'project-find-functions #'project-find-go-module)
+     ))
+
+;; *** loading eglot
+(autoload 'eglot-ensure "eglot"
+  "Start Eglot session for current buffer if there isn’t one." t)
+
+(eval-after-load "go-mode"
+  `(progn
+     (add-hook 'go-mode-hook 'eglot-ensure)))
+
+;; *** configuring gopls options
+(setq-default eglot-workspace-configuration
+              '((:gopls .
+                        ((staticcheck . t)
+                         (matcher . "CaseSensitive"))
+                        )))
+  
+
+
 
